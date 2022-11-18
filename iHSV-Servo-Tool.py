@@ -58,11 +58,11 @@ class ModBusDataCurveItem(pg.PlotCurveItem):
         layout.setColumnMinimumWidth(0, 30)
         layout.addWidget(self.label, 0, 1, 1, 2)
         layout.setColumnMinimumWidth(1, 150)
-        layout.setColumnStretch(1, 0.5)
+        layout.setColumnStretch(1, 1)
         layout.addWidget(self.activeCheckbox, 0, 2)
         layout.addWidget(self.axisCheckbox, 1, 2)
         layout.setColumnMinimumWidth(2, 50)
-        layout.setColumnStretch(2, 0.5)
+        layout.setColumnStretch(2, 1)
 
         self.readSettings()
 
@@ -278,9 +278,9 @@ class MainWindow(QMainWindow):
 
         for col_nbr, col_name in enumerate(header):
             if col_name == 'Description':
-                self.ParamTable.horizontalHeader().setResizeMode(col_nbr, QHeaderView.Stretch)
+                self.ParamTable.horizontalHeader().setSectionResizeMode(col_nbr, QHeaderView.Stretch)
             else:
-                self.ParamTable.horizontalHeader().setResizeMode(col_nbr, QHeaderView.ResizeToContents)
+                self.ParamTable.horizontalHeader().setSectionResizeMode(col_nbr, QHeaderView.ResizeToContents)
 
     def attachCurve(self, curve):
         try:
