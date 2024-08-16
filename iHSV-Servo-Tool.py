@@ -399,7 +399,9 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage("Failed to convert Config Value...", 2000)
             return
         reg = self.ParamTable.addressList[row]
+        reg = reg | 0x8000 # whatever this extra bit does, JMC software uses it when writing to a register
         self.servo.write_register(reg, value, functioncode=6)
+        self.servo.read_register(reg) # reading the register again seems to make sure the value is persistent through power off...
         self.statusBar().showMessage("Writing {0} to 0x{1:02x} done!".format(value, reg), 5000)
 
     def updateCurves(self):
