@@ -30,6 +30,9 @@ import numpy as np
 import serial
 import minimalmodbus
 
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
+
 
 class ModBusDataCurveItem(pg.PlotCurveItem):
 
@@ -159,8 +162,12 @@ class MainWindow(QMainWindow):
         self.cbSelectParameterGroup = QComboBox()
         self.pbReadParams.clicked.connect(self.readParams)
         self.pbStartStopMonitor = QPushButton('Start Monitor')
-        self.pbStartStopMonitor.setFixedHeight(100)
+        self.pbStartStopMonitor.setFixedHeight(80)
         self.pbStartStopMonitor.clicked.connect(self.startStopMonitor)
+        self.pbExport = QPushButton('Export Parameters to File')
+        self.pbExport.clicked.connect(self.exportToFileDialog)
+        self.pbLoadParams = QPushButton('Load Parameters from File')
+        self.pbLoadParams.clicked.connect(self.loadParamsFromFileDialog)
 
         self.ParamTable = QTableWidget(1, 1, self)
 
@@ -215,7 +222,9 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.cbSelectParameterGroup, 4, 0)  # parameter-group-combobox
         layout.addWidget(self.pbReadParams, 5, 0)
         layout.addWidget(self.pbStartStopMonitor, 6, 0)
-        layout.addWidget(self.ParamTable, 1, 1, 6, 2)  # list widget goes in bottom-left
+        layout.addWidget(self.pbExport, 7, 0)
+        layout.addWidget(self.pbLoadParams, 8, 0)
+        layout.addWidget(self.ParamTable, 1, 1, 8, 2)  # list widget goes in bottom-left
 
         self.setCentralWidget(self.widget)
 
@@ -403,6 +412,116 @@ class MainWindow(QMainWindow):
         self.servo.write_register(reg, value, functioncode=6)
         self.servo.read_register(reg) # reading the register again seems to make sure the value is persistent through power off...
         self.statusBar().showMessage("Writing {0} to 0x{1:02x} done!".format(value, reg), 5000)
+
+    def exportToFileDialog(self):
+        if not self.connected:
+            self.statusBar().showMessage("Not connected...", 2000)
+            return
+        options = QFileDialog.Options()
+        suggested_filename = "parameters.xml"  # Default suggested filename
+        fileName, _ = QFileDialog.getSaveFileName(self, "Save Parameters As", suggested_filename, "XML Files (*.xml);;All Files (*)", options=options)
+        if fileName:
+            QApplication.processEvents()  # Ensures the dialog closes immediately
+            if not fileName.endswith('.xml'):
+                fileName += '.xml'
+            self.saveParamsAsXML(fileName)
+
+    def saveParamsAsXML(self, fileName):
+        root = ET.Element('Parameters')
+
+        # Create a progress dialog
+        progress = QProgressDialog("Saving parameters...", "Cancel", 0, self.cbSelectParameterGroup.count(), self)
+        progress.setWindowTitle("Saving")
+        progress.setWindowModality(Qt.WindowModal)
+        progress.setMinimumDuration(0)
+
+        # Loop through all parameter groups
+        for i in range(self.cbSelectParameterGroup.count()):
+            group = self.cbSelectParameterGroup.itemText(i)
+            progress.setLabelText(f"Processing {group}...")
+            progress.setValue(i)
+
+            if progress.wasCanceled():
+                break
+
+            # Select the group and read the parameters
+            self.cbSelectParameterGroup.setCurrentIndex(i)
+            self.readParams()
+
+            # Add parameters to XML
+            groupElement = ET.SubElement(root, group)
+            for row in range(self.ParamTable.rowCount()):
+                paramElement = ET.SubElement(groupElement, 'Parameter')
+                for col in range(self.ParamTable.columnCount()):
+                    header = self.ParamTable.horizontalHeaderItem(col).text()
+                    cell = self.ParamTable.item(row, col).text()
+                    ET.SubElement(paramElement, header).text = cell
+                # save decimal place info in file
+                ET.SubElement(paramElement, "decimal_place").text = str(self.ParamTable.decimalList[row])
+
+        progress.setValue(self.cbSelectParameterGroup.count())
+
+        # Convert the ElementTree to a string and format it
+        rough_string = ET.tostring(root, 'utf-8')
+        reparsed = minidom.parseString(rough_string)
+        pretty_xml_as_string = reparsed.toprettyxml(indent="  ")
+
+        # Write the formatted XML to the file
+        with open(fileName, 'w', encoding='utf-8') as xmlFile:
+            xmlFile.write(pretty_xml_as_string)
+
+    def loadParamsFromFileDialog(self):
+        if not self.connected:
+            self.statusBar().showMessage("Not connected...", 2000)
+            return
+        options = QFileDialog.Options()
+        fileName, _ = QFileDialog.getOpenFileName(self, "Load Parameters from XML", "", "XML Files (*.xml);;All Files (*)", options=options)
+        if fileName:
+            QApplication.processEvents()  # Ensures the dialog closes immediately
+            if not os.path.exists(fileName):
+                print(f"File does not exist: {fileName}")
+                return
+            self.writeParamsFromXML(fileName)
+
+    def writeParamsFromXML(self, fileName):
+        tree = ET.parse(fileName)
+        root = tree.getroot()
+
+        # Create a progress dialog
+        progress = QProgressDialog("Loading parameters...", "Cancel", 0, len(root), self)
+        progress.setWindowTitle("Loading")
+        progress.setWindowModality(Qt.WindowModal)
+        progress.setMinimumDuration(0)
+
+        # Iterate through all parameter groups in the XML
+        for i, groupElement in enumerate(root):
+            progress.setLabelText(f"Processing {groupElement.tag}...")
+            progress.setValue(i)
+
+            if progress.wasCanceled():
+                break
+
+            for paramElement in groupElement.findall('Parameter'):
+                reg = int(paramElement.find('Address').text, 16)
+                value = float(paramElement.find('Value').text)
+
+                # Check if 'decimal_place' exists and handle accordingly
+                decimal_place_element = paramElement.find('decimal_place')
+                if decimal_place_element is not None and decimal_place_element.text.isdigit():
+                    decimal_place = int(decimal_place_element.text)
+                    if decimal_place != 0:
+                        value *= 10 ** decimal_place
+                value = int(value)
+
+                try:
+                    reg = reg | 0x8000 # whatever this extra bit does, JMC software uses it when writing to a register
+                    self.servo.write_register(reg, value, functioncode=6)
+                    self.servo.read_register(reg) # reading the register again seems to make sure the value is persistent through power off...
+                    self.statusBar().showMessage("Writing {0} to 0x{1:02x} done!".format(value, reg), 5000)
+                except Exception as e:
+                    self.statusBar().showMessage(f"Error writing {value} to 0x{reg:02x}: {str(e)}", 5000)
+
+        progress.setValue(len(root))
 
     def updateCurves(self):
         try:
