@@ -147,7 +147,7 @@ class MainWindow(QMainWindow):
         self.settings = QSettings("IBB", "iHSV57 Servo Tool")
         self.connected = False
 
-        self.motorversion = 'v5'
+        self.motorversion = 'v6'
         self.ihsv = iHSV(self.motorversion)
 
         ## Create some widgets to be placed inside
