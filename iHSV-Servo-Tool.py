@@ -436,6 +436,8 @@ class MainWindow(QMainWindow):
             value = (1 << 16) + value  # Convert to unsigned 16-bit integer
 
         self.servo.write_register(reg, value, functioncode=6)
+        # pause to ensure the write is processed
+        QThread.msleep(10)
         self.servo.read_register(reg) # reading the register again seems to make sure the value is persistent through power off...
         self.statusBar().showMessage("Writing {0} to 0x{1:02x} done!".format(value, reg), 5000)
 
@@ -555,6 +557,8 @@ class MainWindow(QMainWindow):
                     print(f"Writing {value} to register 0x{reg:02x} ({param_name})")
                     reg = reg | 0x8000 # whatever this extra bit does, JMC software uses it when writing to a register
                     self.servo.write_register(reg, value, functioncode=6)
+                    # pause to ensure the write is processed
+                    QThread.msleep(10)
                     self.servo.read_register(reg) # reading the register again seems to make sure the value is persistent through power off...
                     self.statusBar().showMessage("Writing {0} to 0x{1:02x} done!".format(value, reg), 5000)
                 except Exception as e:
