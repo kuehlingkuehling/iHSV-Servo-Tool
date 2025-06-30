@@ -1569,6 +1569,34 @@ class iHSV:
             [[0x0844], True, 'Torque Feedback [%]']
         ]
     }
+    gain_relevant_only_registers = [
+        "P02-00",  # Position control gain 1
+        "P02-01",  # Position control gain 2
+        "P02-03",  # Speed feed forward gain
+        "P02-04",  # Speed feedforward smoothing constant
+        "P02-10",  # Speed proportional gain 1
+        "P02-11",  # Velocity integral constant 1
+        "P02-12",  # Pseudo differential feedforward control coefficient 1
+        "P02-13",  # Speed proportional gain 2
+        "P02-14",  # Velocity integral constant 2
+        "P02-15",  # Pseudo differential feedforward control coefficient 2
+        "P02-19",  # Torque feedforward gain
+        "P02-20",  # Torque feedforward smoothing constant
+        "P02-30",  # Gain switching mode
+        "P02-31",  # Gain switching level
+        "P02-32",  # Gain switching hysteresis
+        "P02-33",  # Communication response delay
+        "P02-34",  # Position gain switching time
+        "P02-41",  # Mode switch level
+        "P02-50",  # Torque command added value
+        "P02-51",  # Forward torque compensation
+        "P02-52",  # Reverse torque compensation
+        "P08-19",  # Feedback speed lowpass filter constant
+        "P08-20",  # Torque command filtering constant
+        "P08-25",  # Disturbance torque compensation gain
+        "P08-26",  # Disturbance torque filtering time constant
+    ]
+
 
     def __init__(self, motor_version):
         if motor_version in self.supported_motor_versions.values():

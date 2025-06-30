@@ -168,6 +168,8 @@ class MainWindow(QMainWindow):
         self.pbExport.clicked.connect(self.exportToFileDialog)
         self.pbLoadParams = QPushButton('Load Parameters from File')
         self.pbLoadParams.clicked.connect(self.loadParamsFromFileDialog)
+        self.cbLoadGainsOnly = QCheckBox("Only load gain relevant parameters effective immediately")
+        self.cbLoadGainsOnly.setChecked(True)
 
         self.ParamTable = QTableWidget(1, 1, self)
 
@@ -224,6 +226,7 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.pbStartStopMonitor, 6, 0)
         layout.addWidget(self.pbExport, 7, 0)
         layout.addWidget(self.pbLoadParams, 8, 0)
+        layout.addWidget(self.cbLoadGainsOnly, 9, 0)  # Add checkbox below the "Load Parameters from File" button
         layout.addWidget(self.ParamTable, 1, 1, 8, 2)  # list widget goes in bottom-left
 
         self.setCentralWidget(self.widget)
@@ -502,6 +505,13 @@ class MainWindow(QMainWindow):
                 break
 
             for paramElement in groupElement.findall('Parameter'):
+                # Skip parameters if "Only load gains parameters effective immediately" is checked
+                if self.cbLoadGainsOnly.isChecked():
+                    param_code = paramElement.find('Code')
+                    if param_code is not None and param_code.text not in self.ihsv.gain_relevant_only_registers:
+                        # If the parameter is not gain relevant, skip it
+                        continue
+
                 reg = int(paramElement.find('Address').text, 16)
                 value = float(paramElement.find('Value').text)
 
