@@ -373,7 +373,7 @@ class MainWindow(QMainWindow):
                 self.ParamTable.decimalList.append(decimal)
             else:
                 self.ParamTable.decimalList.append(0)
-
+            print(f"with decimal places it is {val}")
             configDataInfo['Value'] = val
             for col, par in enumerate(self.ihsv.get_selected_motor_parameter()):
                 if par == 'Description':
@@ -424,6 +424,7 @@ class MainWindow(QMainWindow):
             self.statusBar().showMessage("Failed to convert Config Value...", 2000)
             return
         reg = self.ParamTable.addressList[row]
+        print(f"Writing {value} to register 0x{reg:02x}")
         reg = reg | 0x8000 # whatever this extra bit does, JMC software uses it when writing to a register
         self.servo.write_register(reg, value, functioncode=6)
         self.servo.read_register(reg) # reading the register again seems to make sure the value is persistent through power off...
@@ -537,6 +538,8 @@ class MainWindow(QMainWindow):
                 value = int(value)
 
                 try:
+                    param_name = paramElement.find('Name').text if paramElement.find('Name') is not None else f"Param_{reg:02x}"
+                    print(f"Writing {value} to register 0x{reg:02x} ({param_name})")
                     reg = reg | 0x8000 # whatever this extra bit does, JMC software uses it when writing to a register
                     self.servo.write_register(reg, value, functioncode=6)
                     self.servo.read_register(reg) # reading the register again seems to make sure the value is persistent through power off...
@@ -575,8 +578,8 @@ class MainWindow(QMainWindow):
             for curve,regs in curves_regs.items():
                 values = [regs_values[reg] for reg in regs] 
                 curve.appendData(values)
-        except:
-            print('Error updating data')
+        except Exception as e:
+            print(f'Error updating data: {e}')
 
     def startStopMonitor(self):
         if (self.pbStartStopMonitor.text() == 'Start Monitor'):
