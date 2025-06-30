@@ -364,7 +364,11 @@ class MainWindow(QMainWindow):
             reg = int(configDataInfo['Address'], 16)
             self.ParamTable.addressList.append(reg)
             val = self.servo.read_register(reg)
-
+            print(f"Reading register 0x{reg:02x} returned {val}")
+            # convert negative values back from two's complement representation
+            if float(configDataInfo['Default']) < 0:
+                # convert to signed 16-bit integer
+                val = val - (1 << 16) if val >= (1 << 15) else val
             # move decimal point
             if 'decimal_place' in configDataInfo.keys():
                 decimal = int(configDataInfo['decimal_place'])
@@ -426,6 +430,11 @@ class MainWindow(QMainWindow):
         reg = self.ParamTable.addressList[row]
         print(f"Writing {value} to register 0x{reg:02x}")
         reg = reg | 0x8000 # whatever this extra bit does, JMC software uses it when writing to a register
+        
+        # Convert negative values to two's complement representation
+        if value < 0:
+            value = (1 << 16) + value  # Convert to unsigned 16-bit integer
+
         self.servo.write_register(reg, value, functioncode=6)
         self.servo.read_register(reg) # reading the register again seems to make sure the value is persistent through power off...
         self.statusBar().showMessage("Writing {0} to 0x{1:02x} done!".format(value, reg), 5000)
@@ -536,6 +545,10 @@ class MainWindow(QMainWindow):
                     if decimal_place != 0:
                         value *= 10 ** decimal_place
                 value = int(value)
+
+                # Convert negative values to two's complement representation
+                if value < 0:
+                    value = (1 << 16) + value  # Convert to unsigned 16-bit integer
 
                 try:
                     param_name = paramElement.find('Name').text if paramElement.find('Name') is not None else f"Param_{reg:02x}"
