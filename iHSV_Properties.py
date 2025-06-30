@@ -1144,7 +1144,7 @@ class iHSV:
                     "Max": "3",
                     "Description": "0：External analog instruction\n1：Digital command (parameters)\n2：Digital instruction\n(communication)\n3：Internal multiple sets of\ninstructions",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "True",
                     "Keep": "false"
@@ -1163,7 +1163,7 @@ class iHSV:
                     "Max": "1",
                     "Description": "adjusting the polarity relations of  analog quantities\n0：Normal\n1：Polarity reversal",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "True",
                     "Keep": "false"
@@ -1182,7 +1182,7 @@ class iHSV:
                     "Max": "6000",
                     "Description": "Setting range：-6000－6000，Unit：rpm\nWhen P04-00 is set to 1, P04-02 is the setting value of speed control.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "false"
@@ -1201,7 +1201,7 @@ class iHSV:
                     "Max": "6500",
                     "Description": "Setting range ：0-6500，Unit：rpm\n Set the maximum allowed speed , exceeding the set value  AL.420 overspeed alarm.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "false"
@@ -1220,7 +1220,7 @@ class iHSV:
                     "Max": "6000",
                     "Description": "Setting range：0-6000，Unit：rpm\n\nLimit the positive speed of the motor.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "false"
@@ -1239,7 +1239,7 @@ class iHSV:
                     "Max": "0",
                     "Description": "setting range：0- -6000，Unit：rpm\n\nLimiting motor reverse speed",
                     "Symbol": "True",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "false"
@@ -1258,7 +1258,7 @@ class iHSV:
                     "Max": "200",
                     "Description": "Set range：0-200.0，Unit：rpm\nSetting the zero speed detection threshold value, if motor speed below the threshold can output  \"motor zero speed output\" signal\n  through the output port",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "true"
@@ -1277,7 +1277,7 @@ class iHSV:
                     "Max": "10000",
                     "Description": "Set range：0-10000，Unit：1ms/1000rpm\n\nSetting the acceleration of speed control",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "false"
@@ -1296,7 +1296,7 @@ class iHSV:
                     "Max": "10000",
                     "Description": "Set range：0-10000，Unit：1ms/1000rpm\nSetting deceleration  in controlling speed",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "false"
@@ -1317,7 +1317,7 @@ class iHSV:
                     "Max": "1",
                     "Description": "Source for adjusting torque limiting amplitude\n\n0: internal digital quantity (set by P05-10, P05-11 or P05-12, P05-13)\n\n1: external analog (T-REF input from external analog input). In this mode, the amplitude of the positive and negative directions is the same.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "True",
                     "Keep": "true"
@@ -1336,7 +1336,7 @@ class iHSV:
                     "Max": "300.0",
                     "Description": "Setting range: 0-300.0, unit: 1%\n\nLimit the positive output of motor, 100 indicates 1 times torque, 300 indicates 3 times torque.\n\nWhen the torque output reaches the limit value, the output signal can be detected through the output torque limit of the DO port.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "1",
+                    "decimal_place": "1",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "false"
@@ -1355,7 +1355,7 @@ class iHSV:
                     "Max": "0",
                     "Description": "Setting range: 0-300.0, unit: 1%\n\nLimit motor reverse output, 100 represents 1 times torque, 300 indicates 3 times torque.\n\nWhen the torque output reaches the limit value, the output signal can be detected through the output torque limit of the DO port.",
                     "Symbol": "True",
-                    "Demical_Place": "1",
+                    "decimal_place": "1",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "false"
@@ -1376,7 +1376,7 @@ class iHSV:
                     "Max": "4",
                     "Description": "Set range: 0-4, factory settings: 0\n\nSet the valid input of the DI1 input port of CN1.\n\n0: low level active (optical coupler).\n\n1: stands for high level efficiency (optocoupler cut-off).\n\n2: rising edge effective\n\n3: falling edge effective\n\n4: rising and falling edge are all effective.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "false"
@@ -1395,7 +1395,7 @@ class iHSV:
                     "Max": "1",
                     "Description": "Set range: 0-1, factory settings: 1\n\n0: when the state is valid, optocoupler cut-off.\n\n1: when the state is valid, the optical coupler turns on.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "false"
@@ -1414,7 +1414,7 @@ class iHSV:
                     "Max": "1",
                     "Description": "Set range: 0-1, factory settings: 1\n\n0: when the state is valid, optocoupler cut-off.\n\n1: when the state is valid, the optical coupler turns on.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "false"
@@ -1433,7 +1433,7 @@ class iHSV:
                     "Max": "2",
                     "Description": "Set range: 0-11, factory settings: 3\n\n0: pins invalid\n\n1: alarm output\n\n2: brake opening output\n\n3: servo ready output\n\n4: positioning and output.\n\n5: positioning close to output\n\n6: speed consistent output\n\n7: Motor zero speed output\n\n8: torque limit detection output\n\n9: speed limit detection output\n\n10: warning output\n\n11: instruction pulse input rate switching output.\n\n12: origin regression completes output.\n\n13: Electrical origin regression completes output.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "0",
+                    "decimal_place": "0",
                     "Permission": "0",
                     "Shutdown_setting": "false",
                     "Keep": "true"
@@ -1454,7 +1454,7 @@ class iHSV:
                     "Max": "25.00",
                     "Description": "---",
                     "Symbol": "FALSE",
-                    "Demical_Place": "2",
+                    "decimal_place": "2",
                     "Permission": "0",
                     "Shutdown_setting": "FALSE",
                     "Keep": "false"
@@ -1473,7 +1473,7 @@ class iHSV:
                     "Max": "25.00",
                     "Description": "Setting range: 0-25.00, unit: ms\n\nTorque command filter time constant. When the motor starts screaming, it can be set up appropriately.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "2",
+                    "decimal_place": "2",
                     "Permission": "0",
                     "Shutdown_setting": "FALSE",
                     "Keep": "false"
@@ -1492,7 +1492,7 @@ class iHSV:
                     "Max": "100.0",
                     "Description": "Setting range: 0-100.0\n\nThe disturbance torque observation is worth the gain coefficient. The greater the value, the stronger the ability to resist disturbance torque, but the action noise may also increase.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "1",
+                    "decimal_place": "1",
                     "Permission": "0",
                     "Shutdown_setting": "FALSE",
                     "Keep": "false"
@@ -1511,7 +1511,7 @@ class iHSV:
                     "Max": "25.0",
                     "Description": "Setting range: 0-25.00, unit: ms\n\nThe larger the numerical value, the stronger the filtering effect and suppressing the action noise. However, excessive phase leads to phase delay, which affects the effect of disturbance torque suppression.",
                     "Symbol": "FALSE",
-                    "Demical_Place": "2",
+                    "decimal_place": "2",
                     "Permission": "0",
                     "Shutdown_setting": "FALSE",
                     "Keep": "false"
