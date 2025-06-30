@@ -289,7 +289,7 @@ class MainWindow(QMainWindow):
         self.ParamTable.verticalHeader().setVisible(False)
 
         for col_nbr, col_name in enumerate(header):
-            if col_name == 'Description':
+            if col_name == 'Name':
                 self.ParamTable.horizontalHeader().setSectionResizeMode(col_nbr, QHeaderView.Stretch)
             else:
                 self.ParamTable.horizontalHeader().setSectionResizeMode(col_nbr, QHeaderView.ResizeToContents)
@@ -376,19 +376,32 @@ class MainWindow(QMainWindow):
 
             configDataInfo['Value'] = val
             for col, par in enumerate(self.ihsv.get_selected_motor_parameter()):
-                item = QTableWidgetItem(str(configDataInfo[par]))
-                if par != 'Value':
-                    # item.setBackground(QColor('lightgrey'))
-                    item.setFlags(Qt.ItemIsEditable)
-                try:
-                    # check if data is a number
-                    float(item.text())
-                    item.setTextAlignment(Qt.AlignRight | Qt.AlignTop)
+                if par == 'Description':
+                    # Set the text "[description]" with blue, underlined style and a tooltip
+                    description_text = str(configDataInfo.get(par, ""))
+                    item = QTableWidgetItem("[description]")
+                    item.setToolTip(description_text)  # Tooltip with the actual description
+                    item.setFlags(Qt.ItemIsEnabled)  # Make the cell non-editable
+                    item.setForeground(QBrush(QColor("blue")))  # Set text color to blue
+                    font = item.font()
+                    font.setUnderline(True)  # Underline the text
+                    item.setFont(font)
+                    item.setTextAlignment(Qt.AlignCenter)  # Center the text
+                    self.ParamTable.setItem(row, col, item)
+                else:
+                    item = QTableWidgetItem(str(configDataInfo[par]))
+                    if par != 'Value':
+                        # item.setBackground(QColor('lightgrey'))
+                        item.setFlags(Qt.ItemIsEditable)
+                    try:
+                        # check if data is a number
+                        float(item.text())
+                        item.setTextAlignment(Qt.AlignRight | Qt.AlignTop)
 
-                except ValueError:
-                    item.setTextAlignment(Qt.AlignLeft | Qt.AlignTop)
+                    except ValueError:
+                        item.setTextAlignment(Qt.AlignLeft | Qt.AlignTop)
 
-                self.ParamTable.setItem(row, col, item)
+                    self.ParamTable.setItem(row, col, item)
             row += 1
         self.ParamTable.resizeRowsToContents()
         self.ParamTable.cellChanged.connect(self.writeParams)
